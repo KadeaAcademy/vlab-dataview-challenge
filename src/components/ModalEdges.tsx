@@ -24,7 +24,7 @@ const ModalEdges: React.FC<ModalEdgesProps> = ({
           {data.in?.map((edge: CustomEdge, key: number) => (
             <div className="" key={key}>
               <Badge bg="success">{"from "}</Badge>
-              <span>{edge.target}</span>
+              <span>{edge.source}</span>
               <Badge bg="info">{edge.label}</Badge>
             </div>
           ))}
@@ -34,7 +34,7 @@ const ModalEdges: React.FC<ModalEdgesProps> = ({
           {data.out?.map((edge: CustomEdge, key: number) => (
             <div className="" key={key}>
               <Badge bg="danger">{"to "}</Badge>
-              <span>{edge.source}</span>
+              <span>{edge.target}</span>
               <Badge bg="info">{edge.label}</Badge>
             </div>
           ))}
