@@ -21,7 +21,7 @@ export type CustomEdge =
     };
 
 export const startNode: Node = {
-  id: "1",
+  id: "START ACTIVITIES",
   position: { x: 0, y: 0 },
   data: { label: "Input" },
   style: {
@@ -35,7 +35,7 @@ export const startNode: Node = {
 };
 
 export const endNode: Node = {
-  id: "2",
+  id: "END ACTIVITIES",
   // TODO: use components width and heights instead of 1600 and 900
   position: { x: 1600, y: 900 },
   data: { label: "Output" },

@@ -1,7 +1,11 @@
-import { Modal } from "react-bootstrap";
-import { ModalEdgesProps } from "../types/view-types";
+import { Badge, Modal } from "react-bootstrap";
+import { CustomEdge, ModalEdgesProps } from "../types/view-types";
 
-const ModalEdges: React.FC<ModalEdgesProps> = ({ data, ...props }) => {
+const ModalEdges: React.FC<ModalEdgesProps> = ({
+  data,
+  focusNode,
+  ...props
+}) => {
   return (
     <Modal
       {...props}
@@ -11,12 +15,40 @@ const ModalEdges: React.FC<ModalEdgesProps> = ({ data, ...props }) => {
     >
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
-          Modal heading
+          <h3>{focusNode?.id}</h3>
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <h4>Centered Modal</h4>
-        <p>{/* display data here */}</p>
+        <p>
+          <h4>Inbound transactions</h4>
+          {data.in?.map((edge: CustomEdge, key: number) => (
+            <div className="" key={key}>
+              <Badge bg="success">{"from "}</Badge>
+              <span>{edge.target}</span>
+              <Badge bg="info">{edge.label}</Badge>
+            </div>
+          ))}
+        </p>
+        <p>
+          <h4>Outbound transactions</h4>
+          {data.out?.map((edge: CustomEdge, key: number) => (
+            <div className="" key={key}>
+              <Badge bg="danger">{"to "}</Badge>
+              <span>{edge.source}</span>
+              <Badge bg="info">{edge.label}</Badge>
+            </div>
+          ))}
+        </p>
+        <p>
+          <h4>Reflexive transactions</h4>
+          <div>
+            <Badge bg="success">{"self "}</Badge>
+            <span>{`${focusNode?.id} `}</span>
+            <Badge bg="info">
+              {data.self?.length ? data.self[0].label : 0}
+            </Badge>
+          </div>
+        </p>
       </Modal.Body>
       {/* <Modal.Footer>
         <Button onClick={()=>props.onHide}>Close</Button>

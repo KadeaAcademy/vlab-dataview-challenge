@@ -51,6 +51,7 @@ const GraphDataViewer: React.FC<GraphDataviewProps> = ({
   const [nodes, setNodes] = useState<(Node | any)[]>([]);
   const [edges, setEdges] = useState<(Edge | any)[]>([]);
   const [connectedEdges, setConnectedEdges] = useState({});
+  const [focusNode, setFocusNode] = useState<Node>();
   const [modalShow, setModalShow] = useState(false);
 
   const onNodesChange = useCallback(
@@ -64,7 +65,8 @@ const GraphDataViewer: React.FC<GraphDataviewProps> = ({
     []
   );
 
-  const handleNodeClick: NodeMouseHandler = (event, node) => {
+  const handleNodeClick: NodeMouseHandler = (event, node:Node) => {
+    setFocusNode(node);
     setConnectedEdges({
       in: findInboundEdges(edges, node.id),
       out: findOutboundEdges(edges, node.id),
@@ -80,13 +82,12 @@ const GraphDataViewer: React.FC<GraphDataviewProps> = ({
     setModalShow(true);
   };
 
-  const initialEdges: CustomEdge[] = Object.keys(start).map((key, value) => {
+  const startEdges: CustomEdge[] = Object.keys(start).map((key) => {
     return {
-      id: `1-${key}`,
-      source: "1",
+      id: `START ACTIVITIES - ${key}`,
+      source: "START ACTIVITIES",
       target: key,
-      sourceHandle: "a",
-      label: value,
+      label: start[key],
       markerEnd: {
         color: "#FF0072",
         width: 25,
@@ -94,16 +95,16 @@ const GraphDataViewer: React.FC<GraphDataviewProps> = ({
         type: "arrowclosed",
         strokeWidth: 1,
       },
+      type: "smart",
     };
   });
 
-  const endEdges: CustomEdge[] = Object.keys(end).map((key, value) => {
+  const endEdges: CustomEdge[] = Object.keys(end).map((key) => {
     return {
-      id: `${key} - 2`,
+      id: `${key} - END ACTIVITIES`,
       source: key,
-      target: "2",
-      sourceHandle: "b",
-      label: value,
+      target: "END ACTIVITIES",
+      label: end[key],
       markerEnd: {
         color: "#FF0072",
         width: 25,
@@ -120,7 +121,6 @@ const GraphDataViewer: React.FC<GraphDataviewProps> = ({
       id: `${source} - ${target}`,
       source: source,
       target: target,
-      sourceHandle: "c",
       label: label,
       markerEnd: {
         color: "#FF0072",
@@ -139,7 +139,7 @@ const GraphDataViewer: React.FC<GraphDataviewProps> = ({
       position: generateEdgePosition(),
       data: {
         label: `${key} (${nodeInboundEdgesSum(key, [
-          ...initialEdges,
+          ...startEdges,
           ...endEdges,
           ...dfgEdges,
         ])})`,
@@ -148,41 +148,30 @@ const GraphDataViewer: React.FC<GraphDataviewProps> = ({
   });
   useEffect(() => {
     setNodes([...initialNodes, startNode, endNode]);
-    setEdges([...initialEdges, ...endEdges, ...dfgEdges]);
-  }, []);
+    setEdges([...startEdges, ...endEdges, ...dfgEdges]);
+  }, [dfg, start, end]);
 
   const findInboundEdges = (edges: CustomEdge[], nodeId: string) => {
-    const edgesArray = [...Array.from(edges)];
-
-    const findSource = edgesArray.filter(
+    return edges.filter(
       (item) => item.target === nodeId && item.source !== item.target
     );
-
-    return findSource;
   };
   const findOutboundEdges = (edges: CustomEdge[], nodeId: string) => {
-    const edgesArray = [...Array.from(edges)];
-
-    const findSource = edgesArray.filter(
+    return edges.filter(
       (item) => item.source === nodeId && item.target !== item.source
     );
-
-    return findSource;
   };
   const findReflexiveEdges = (edges: CustomEdge[], nodeId: string) => {
-    const edgesArray = [...Array.from(edges)];
-
-    const findSource = edgesArray.filter(
+    return edges.filter(
       (item) => item.source === nodeId && item.source === item.target
     );
-
-    return findSource;
   };
 
   return (
     <div style={{ height: "100vh", overflow: "hidden" }}>
       <ModalEdges
         data={connectedEdges}
+        focusNode={focusNode}
         show={modalShow}
         onHide={() => setModalShow(false)}
       />
