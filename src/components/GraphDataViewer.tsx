@@ -50,8 +50,7 @@ const GraphDataViewer: React.FC<GraphDataviewProps> = ({
 
   const [nodes, setNodes] = useState<(Node | any)[]>([]);
   const [edges, setEdges] = useState<(Edge | any)[]>([]);
-  const [connectedEdges,setConnectedEdges]=useState({})
-  
+  const [connectedEdges, setConnectedEdges] = useState({});
 
   const onNodesChange = useCallback(
     (changes: NodeChange[]) =>
@@ -66,10 +65,10 @@ const GraphDataViewer: React.FC<GraphDataviewProps> = ({
 
   const handleNodeClick: NodeMouseHandler = (event, node) => {
     setConnectedEdges({
-      in:findInboundEdges(edges,node.id),
-      out:findOutboundEdges(edges,node.id),
-      self:findReflexiveEdges(edges,node.id)
-    })
+      in: findInboundEdges(edges, node.id),
+      out: findOutboundEdges(edges, node.id),
+      self: findReflexiveEdges(edges, node.id),
+    });
     const x =
       node.position.x + (typeof node.width === "number" ? node.width / 2 : 0);
     const y =
@@ -77,13 +76,7 @@ const GraphDataViewer: React.FC<GraphDataviewProps> = ({
     const zoom = 1.85;
 
     setCenter(x, y, { zoom, duration: 1000 });
-   
-    
   };
-  useEffect(()=>{
-    console.log("##########",connectedEdges);
-  },[connectedEdges])
-
 
   const initialEdges: CustomEdge[] = Object.keys(start).map((key, value) => {
     return {
@@ -155,28 +148,35 @@ const GraphDataViewer: React.FC<GraphDataviewProps> = ({
     setNodes([...initialNodes, startNode, endNode]);
     setEdges([...initialEdges, ...endEdges, ...dfgEdges]);
   }, []);
-  const findInboundEdges = (edges : CustomEdge [] , nodeId : string) => {
+  
+  const findInboundEdges = (edges: CustomEdge[], nodeId: string) => {
     const edgesArray = [...Array.from(edges)];
 
-    const findSource = edgesArray.filter((item)=>item.target === nodeId && item.source !== item.target)
-    
-    return findSource
+    const findSource = edgesArray.filter(
+      (item) => item.target === nodeId && item.source !== item.target
+    );
+
+    return findSource;
   };
-  const findOutboundEdges = (edges : CustomEdge [] , nodeId : string) => {
+  const findOutboundEdges = (edges: CustomEdge[], nodeId: string) => {
     const edgesArray = [...Array.from(edges)];
-    
-    const findSource = edgesArray.filter((item)=>item.source === nodeId && item.target !== item.source)
-  
-    return findSource
+
+    const findSource = edgesArray.filter(
+      (item) => item.source === nodeId && item.target !== item.source
+    );
+
+    return findSource;
   };
-  const findReflexiveEdges = (edges : CustomEdge [] , nodeId : string) => {
+  const findReflexiveEdges = (edges: CustomEdge[], nodeId: string) => {
     const edgesArray = [...Array.from(edges)];
-    
-    const findSource = edgesArray.filter((item)=>item.source === nodeId && item.source === item.target)
-  
-    return findSource
+
+    const findSource = edgesArray.filter(
+      (item) => item.source === nodeId && item.source === item.target
+    );
+
+    return findSource;
   };
- 
+
   return (
     <div style={{ height: "100vh", overflow: "hidden" }}>
       <ReactFlow
