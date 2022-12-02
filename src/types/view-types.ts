@@ -1,5 +1,6 @@
 import SmartBezierEdge from "@tisoap/react-flow-smart-edge";
 import { Edge, Node } from "reactflow";
+import { ModalProps } from "react-bootstrap";
 
 export type GraphDataviewType = {
   dfg: CustomEdge[];
@@ -14,7 +15,7 @@ export const edgeTypes = {
 export type CustomEdge =
   | Edge
   | {
-      source: string; 
+      source: string;
       target: string;
       label: number;
     };
@@ -47,3 +48,6 @@ export const endNode: Node = {
     textAlign: "center",
   },
 };
+export interface ModalEdgesProps extends ModalProps {
+  data: any;
+}

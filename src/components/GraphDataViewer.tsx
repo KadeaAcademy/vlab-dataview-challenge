@@ -13,9 +13,6 @@ import ReactFlow, {
   Edge,
 } from "reactflow";
 import "reactflow/dist/style.css";
-
-import Button from "react-bootstrap/Button";
-
 import {
   CustomEdge,
   edgeTypes,
@@ -24,7 +21,7 @@ import {
   startNode,
 } from "../types/view-types";
 import { generateEdgePosition } from "../utils/view-utils";
-import ModalEges from "./ModalEdges";
+import ModalEdges from "./ModalEdges";
 
 const nodeInboundEdgesSum = (currentNodeId: string, edges: CustomEdge[]) => {
   const inboundArrowsWeigths = edges.map(({ target: targetNodeId, label }) => {
@@ -80,6 +77,7 @@ const GraphDataViewer: React.FC<GraphDataviewProps> = ({
     const zoom = 1.85;
 
     setCenter(x, y, { zoom, duration: 1000 });
+    setModalShow(true);
   };
 
   const initialEdges: CustomEdge[] = Object.keys(start).map((key, value) => {
@@ -183,10 +181,11 @@ const GraphDataViewer: React.FC<GraphDataviewProps> = ({
 
   return (
     <div style={{ height: "100vh", overflow: "hidden" }}>
-      <Button variant="primary" onClick={() => setModalShow(true)}>
-        Launch vertically centered modal
-      </Button>
-      <ModalEges show={modalShow} onHide={() => setModalShow(false)} />
+      <ModalEdges
+        data={connectedEdges}
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+      />
       <ReactFlow
         fitView
         onNodeClick={handleNodeClick}
